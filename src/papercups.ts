@@ -5,7 +5,7 @@ import * as API from './api';
 import Logger from './logger';
 import store from './storage';
 
-type Config = {
+export type Config = {
   accountId: string;
   customerId?: string | null;
   baseUrl?: string;
@@ -19,8 +19,8 @@ type Config = {
   onSetWidgetSettings?: (settings: WidgetSettings) => void;
   onPresenceSync?: (data: any) => void;
   onConversationCreated?: (customerId: string, data: any) => void;
-  onMessageCreated: (data: any) => void;
-  onMessagesUpdated: (messages: Array<Message>) => void;
+  onMessageCreated?: (data: any) => void;
+  onMessagesUpdated?: (messages: Array<Message>) => void;
 };
 
 export class Papercups {
@@ -70,7 +70,7 @@ export class Papercups {
       validatedCustomerId
     );
 
-    this.setWidgetSettings(settings)
+    return this.setWidgetSettings(settings)
       .setCustomerId(customerId)
       .fetchLatestConversation(customerId);
   };
