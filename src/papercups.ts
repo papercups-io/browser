@@ -265,16 +265,21 @@ export class Papercups {
     return API.createNewCustomer(accountId, customer, baseUrl);
   };
 
-  identify = async (externalId: string, metadata = {}) => {
+  identify = async (externalId: string, metadata: CustomerMetadata = {}) => {
     try {
-      const existingCustomerId = await this.findCustomerByExternalId(
-        externalId
+      const isValidCustomer = await this.isValidCustomerId(this.customerId);
+      const validatedCustomerId = isValidCustomer ? this.customerId : null;
+      const params = {...metadata, external_id: externalId};
+      const existingCustomerId = await this.checkForExistingCustomer(
+        params,
+        validatedCustomerId
       );
-      const customer = existingCustomerId
+
+      const {id: customerId} = existingCustomerId
         ? await this.updateCustomerMetadata(existingCustomerId, metadata)
         : await this.createNewCustomer(metadata);
 
-      return customer;
+      return this.setCustomerId(customerId);
     } catch (err) {
       // TODO: this edge case may occur if the cached customer ID somehow
       // gets messed up (e.g. between dev and prod environments). The long term
@@ -282,9 +287,9 @@ export class Papercups {
       this.logger.error('Failed to update or create customer:', err);
       this.logger.error('Retrying...');
 
-      const customer = await this.createNewCustomer(metadata);
+      const {id: customerId} = await this.createNewCustomer(metadata);
 
-      return customer;
+      return this.setCustomerId(customerId);
     }
   };
 
