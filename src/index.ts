@@ -8,3 +8,14 @@ export {
   setupPostMessageHandlers,
   shouldActivateGameMode,
 } from './utils';
+export {
+  fetchWidgetSettings,
+  updateWidgetSettingsMetadata,
+  createNewCustomer,
+  isValidCustomer,
+  updateCustomerMetadata,
+  createNewConversation,
+  findCustomerByExternalId,
+  fetchCustomerConversations,
+  upload,
+} from './api';
