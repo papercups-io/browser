@@ -8,6 +8,7 @@ import store from './storage';
 export type Config = {
   accountId: string;
   customerId?: string | null;
+  inboxId?: string;
   baseUrl?: string;
   greeting?: string;
   awayMessage?: string;
@@ -37,7 +38,13 @@ export class Papercups {
 
   constructor(config: Config) {
     const w = window as any;
-    const {baseUrl, customerId, debug: isDebugMode = false} = config;
+    const {
+      baseUrl,
+      accountId,
+      customerId,
+      inboxId,
+      debug: isDebugMode = false,
+    } = config;
     const debugModeEnabled = isDev(w) || isDebugMode;
 
     this.config = config;
@@ -51,7 +58,9 @@ export class Papercups {
 
     const websocketUrl = getWebsocketUrl(baseUrl);
 
-    this.socket = new Socket(websocketUrl);
+    this.socket = new Socket(websocketUrl, {
+      params: {account_id: accountId, inbox_id: inboxId},
+    });
   }
 
   static init = (config: Config) => {
@@ -214,9 +223,14 @@ export class Papercups {
   };
 
   createNewConversation = async (customerId: string) => {
-    const {accountId, baseUrl} = this.config;
+    const {accountId, inboxId, baseUrl} = this.config;
+    const params = {
+      account_id: accountId,
+      customer_id: customerId,
+      inbox_id: inboxId,
+    };
 
-    return API.createNewConversation(accountId, customerId, baseUrl);
+    return API.createNewConversation(params, baseUrl);
   };
 
   initializeNewConversation = async (
@@ -295,23 +309,23 @@ export class Papercups {
   };
 
   fetchWidgetSettings = async (): Promise<WidgetSettings> => {
-    const {accountId, baseUrl} = this.config;
+    const {accountId, inboxId, baseUrl} = this.config;
+    const query = {account_id: accountId, inbox_id: inboxId};
     const empty = {} as WidgetSettings;
 
-    return API.fetchWidgetSettings(accountId, baseUrl)
+    return API.fetchWidgetSettings(query, baseUrl)
       .then((settings) => settings || empty)
       .catch(() => empty);
   };
 
   updateWidgetSettingsMetadata = async (metadata: any) => {
-    const {accountId, baseUrl} = this.config;
+    const {accountId, inboxId, baseUrl} = this.config;
+    const params = {account_id: accountId, inbox_id: inboxId, metadata};
 
-    return API.updateWidgetSettingsMetadata(accountId, metadata, baseUrl).catch(
-      (err) => {
-        // No need to block on this
-        this.logger.error('Failed to update widget metadata:', err);
-      }
-    );
+    return API.updateWidgetSettingsMetadata(params, baseUrl).catch((err) => {
+      // No need to block on this
+      this.logger.error('Failed to update widget metadata:', err);
+    });
   };
 
   findCustomerByExternalId = async (
@@ -319,13 +333,14 @@ export class Papercups {
     filters = {}
   ): Promise<string | null> => {
     const {accountId, baseUrl} = this.config;
+    const query = {
+      account_id: accountId,
+      external_id: externalId,
+      ...filters,
+    };
+
     const {customer_id: matchingCustomerId} =
-      await API.findCustomerByExternalId(
-        externalId,
-        accountId,
-        filters,
-        baseUrl
-      );
+      await API.findCustomerByExternalId(query, baseUrl);
 
     return matchingCustomerId;
   };
@@ -384,9 +399,14 @@ export class Papercups {
   };
 
   fetchLatestCustomerConversation = async (customerId: string) => {
-    const {accountId, baseUrl} = this.config;
+    const {accountId, inboxId, baseUrl} = this.config;
+    const query = {
+      customer_id: customerId,
+      account_id: accountId,
+      inbox_id: inboxId,
+    };
 
-    return API.fetchCustomerConversations(customerId, accountId, baseUrl).then(
+    return API.fetchCustomerConversations(query, baseUrl).then(
       (conversations) => {
         this.logger.debug('Found existing conversations:', conversations);
         const [latest] = conversations;

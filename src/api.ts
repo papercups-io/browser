@@ -17,21 +17,21 @@ const put = async (url: string, params = {}) => {
 };
 
 export const fetchWidgetSettings = async (
-  accountId: string,
+  query: {account_id: string; inbox_id?: string},
   baseUrl = DEFAULT_BASE_URL
 ): Promise<WidgetSettings> => {
-  return get(`${baseUrl}/api/widget_settings`, {account_id: accountId});
+  return get(`${baseUrl}/api/widget_settings`, query);
 };
 
 export const updateWidgetSettingsMetadata = async (
-  accountId: string,
-  metadata: any,
+  params: {
+    account_id: string;
+    inbox_id?: string;
+    metadata: any;
+  },
   baseUrl = DEFAULT_BASE_URL
 ): Promise<WidgetSettings> => {
-  return put(`${baseUrl}/api/widget_settings/metadata`, {
-    account_id: accountId,
-    metadata,
-  });
+  return put(`${baseUrl}/api/widget_settings/metadata`, params);
 };
 
 export const createNewCustomer = async (
@@ -69,49 +69,46 @@ export const updateCustomerMetadata = async (
 };
 
 export const createNewConversation = async (
-  accountId: string,
-  customerId: string,
+  conversation: {
+    account_id: string;
+    customer_id: string;
+    inbox_id?: string;
+  },
   baseUrl = DEFAULT_BASE_URL
 ) => {
   return post(`${baseUrl}/api/conversations`, {
-    conversation: {
-      account_id: accountId,
-      customer_id: customerId,
-    },
+    conversation,
   });
 };
 
 export const findCustomerByExternalId = async (
-  externalId: string,
-  accountId: string,
-  filters: Record<string, any>,
+  query: {
+    external_id: string;
+    account_id: string;
+    [key: string]: any;
+  },
   baseUrl = DEFAULT_BASE_URL
 ) => {
-  return get(`${baseUrl}/api/customers/identify`, {
-    ...filters,
-    external_id: externalId,
-    account_id: accountId,
-  });
+  return get(`${baseUrl}/api/customers/identify`, query);
 };
 
 export const fetchCustomerConversations = async (
-  customerId: string,
-  accountId: string,
+  query: {
+    customer_id: string;
+    account_id: string;
+    inbox_id?: string;
+  },
   baseUrl = DEFAULT_BASE_URL
 ) => {
-  return get(`${baseUrl}/api/conversations/customer`, {
-    customer_id: customerId,
-    account_id: accountId,
-  });
+  return get(`${baseUrl}/api/conversations/customer`, query);
 };
 
 export const upload = async (
-  accountId: string,
-  file: any,
+  params: {
+    account_id: string;
+    file: any;
+  },
   baseUrl = DEFAULT_BASE_URL
 ) => {
-  return post(`${baseUrl}/api/upload`, {
-    file,
-    account_id: accountId,
-  });
+  return post(`${baseUrl}/api/upload`, params);
 };
