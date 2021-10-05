@@ -68,6 +68,10 @@ export class Papercups {
     return new Papercups(config);
   };
 
+  static open = () => window.dispatchEvent(new Event('papercups:open'));
+  static close = () => window.dispatchEvent(new Event('papercups:close'));
+  static toggle = () => window.dispatchEvent(new Event('papercups:toggle'));
+
   start = async () => {
     this.connect();
 
