@@ -28,7 +28,7 @@ export type Attachment = {
   content_type: string;
 };
 
-export type CustomerMetadata = {
+export type Customer = {
   name?: string;
   email?: string;
   external_id?: string;
@@ -41,7 +41,9 @@ export type CustomerMetadata = {
   os?: string;
   ip?: string;
   time_zone?: string;
-} | null;
+};
+
+export type CustomerMetadata = Customer | null;
 
 export type Account = {
   id: string;

@@ -24,6 +24,7 @@ export type Config = {
   onMessagesUpdated?: (messages: Array<Message>) => void;
 };
 
+// TODO: split into smaller modules? (e.g. decouple socket/channel from other logic)
 export class Papercups {
   socket: Socket;
   channel?: Channel;

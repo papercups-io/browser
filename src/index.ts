@@ -1,5 +1,14 @@
 export {Papercups} from './papercups';
 export type {Config} from './papercups';
+export type {
+  Account,
+  Attachment,
+  Customer,
+  CustomerMetadata,
+  Message,
+  User,
+  WidgetSettings,
+} from './types';
 export {
   isAgentMessage,
   isCustomerMessage,
@@ -14,8 +23,9 @@ export {
   createNewCustomer,
   isValidCustomer,
   updateCustomerMetadata,
-  createNewConversation,
   findCustomerByExternalId,
+  createNewConversation,
   fetchCustomerConversations,
   upload,
 } from './api';
+export {getUserInfo} from './info';
