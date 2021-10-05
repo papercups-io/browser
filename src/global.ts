@@ -22,7 +22,7 @@ const {
 } = config;
 
 if (!accountId) {
-  throw new Error('An account token is required to start Storytime!');
+  throw new Error('An account token is required to start Papercups!');
 }
 
 Papercups.init({
