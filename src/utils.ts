@@ -84,7 +84,7 @@ export function setupPostMessageHandlers(w: any, handler: (msg: any) => void) {
   } else {
     w.attachEvent('onmessage', cb);
 
-    return () => w.detachEvent('message', cb);
+    return () => w.detachEvent('onmessage', cb);
   }
 }
 
@@ -135,7 +135,8 @@ export const isValidUuid = (id: any) => {
     return false;
   }
 
-  const regex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+  const regex =
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
   return regex.test(id);
 };
