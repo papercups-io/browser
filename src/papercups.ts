@@ -267,17 +267,21 @@ export class Papercups {
 
   identify = async (externalId: string, metadata: CustomerMetadata = {}) => {
     try {
-      const isValidCustomer = await this.isValidCustomerId(this.customerId);
-      const validatedCustomerId = isValidCustomer ? this.customerId : null;
+      const id = this.customerId || this.getCachedCustomerId();
+      const isValidCustomer = await this.isValidCustomerId(id);
       const params = {...metadata, external_id: externalId};
-      const existingCustomerId = await this.checkForExistingCustomer(
-        params,
-        validatedCustomerId
-      );
+
+      if (isValidCustomer) {
+        const {id: customerId} = await this.updateCustomerMetadata(id, params);
+
+        return this.setCustomerId(customerId);
+      }
+
+      const existingCustomerId = await this.checkForExistingCustomer(params);
 
       const {id: customerId} = existingCustomerId
-        ? await this.updateCustomerMetadata(existingCustomerId, metadata)
-        : await this.createNewCustomer(metadata);
+        ? await this.updateCustomerMetadata(existingCustomerId, params)
+        : await this.createNewCustomer(params);
 
       return this.setCustomerId(customerId);
     } catch (err) {
