@@ -110,6 +110,7 @@ export class Papercups {
   };
 
   setCustomerId = (customerId: string | null) => {
+    this.logger.debug('Setting customer ID:', customerId);
     this.customerId = customerId;
     this.cacheCustomerId(customerId);
 
@@ -121,6 +122,7 @@ export class Papercups {
     );
 
     if (this.config.onSetCustomerId) {
+      this.logger.debug('Invoking onSetCustomerId:', customerId);
       this.config.onSetCustomerId(customerId);
     }
 
@@ -254,12 +256,14 @@ export class Papercups {
   };
 
   updateCustomerMetadata = (customerId: string, metadata: CustomerMetadata) => {
+    this.logger.debug('Updating customer metadata:', {customerId, metadata});
     const {baseUrl} = this.config;
 
     return API.updateCustomerMetadata(customerId, metadata, baseUrl);
   };
 
   createNewCustomer = (customer: CustomerMetadata) => {
+    this.logger.debug('Creating new customer:', customer);
     const {baseUrl, accountId} = this.config;
 
     return API.createNewCustomer(accountId, customer, baseUrl);
@@ -272,6 +276,7 @@ export class Papercups {
       const params = {...metadata, external_id: externalId};
 
       if (isValidCustomer) {
+        this.logger.debug('Valid customer found for ID:', id);
         const {id: customerId} = await this.updateCustomerMetadata(id, params);
 
         return this.setCustomerId(customerId);

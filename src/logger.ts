@@ -10,7 +10,7 @@ class Logger {
       return;
     }
 
-    console.debug(...args);
+    console.debug('[@papercups/browser]', ...args);
   }
 
   log(...args: any) {
@@ -18,19 +18,19 @@ class Logger {
       return;
     }
 
-    console.log(...args);
+    console.log('[@papercups/browser]', ...args);
   }
 
   info(...args: any) {
-    console.info(...args);
+    console.info('[@papercups/browser]', ...args);
   }
 
   warn(...args: any) {
-    console.warn(...args);
+    console.warn('[@papercups/browser]', ...args);
   }
 
   error(...args: any) {
-    console.error(...args);
+    console.error('[@papercups/browser]', ...args);
   }
 }
 
